@@ -1,6 +1,7 @@
 ﻿namespace WheelFactory.Models
 {
-    public class Color
+    public class Colors
     {
+        public string PColor { get; set; }
     }
 }
