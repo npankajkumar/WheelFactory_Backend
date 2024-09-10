@@ -1,9 +1,13 @@
-﻿namespace WheelFactory.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace WheelFactory.Models
 {
     public class User
     {
-        public int Id { get; set; }
-        public string UserId { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int UserId { get; set; }
         public string Password { get; set; }
         public string Role { get; set; }
     }
