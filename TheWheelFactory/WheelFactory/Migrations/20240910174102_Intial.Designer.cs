@@ -12,8 +12,8 @@ using WheelFactory.Models;
 namespace WheelFactory.Migrations
 {
     [DbContext(typeof(WheelContext))]
-    [Migration("20240910112731_IntialCreate")]
-    partial class IntialCreate
+    [Migration("20240910174102_Intial")]
+    partial class Intial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -159,9 +159,8 @@ namespace WheelFactory.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OrderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("OrdersOrderId")
                         .HasColumnType("int");
@@ -200,9 +199,8 @@ namespace WheelFactory.Migrations
                     b.Property<DateTime?>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("OrderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("OrdersOrderId")
                         .HasColumnType("int");
