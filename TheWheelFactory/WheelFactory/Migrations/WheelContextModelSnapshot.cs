@@ -81,7 +81,7 @@ namespace WheelFactory.Migrations
 
                     b.HasKey("OrderId");
 
-                    b.ToTable("Order");
+                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("WheelFactory.Models.PaintType", b =>
@@ -145,7 +145,7 @@ namespace WheelFactory.Migrations
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("IRating")
+                    b.Property<int?>("IRating")
                         .HasColumnType("int");
 
                     b.Property<string>("ImageUrl")
@@ -159,19 +159,13 @@ namespace WheelFactory.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OrdersOrderId")
-                        .HasColumnType("int");
-
                     b.Property<string>("PColor")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SandBlastingLevel")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
@@ -180,7 +174,7 @@ namespace WheelFactory.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrdersOrderId");
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Tasks");
                 });
@@ -199,16 +193,13 @@ namespace WheelFactory.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OrdersOrderId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrdersOrderId");
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Transactions");
                 });
@@ -236,16 +227,24 @@ namespace WheelFactory.Migrations
 
             modelBuilder.Entity("WheelFactory.Models.Task", b =>
                 {
-                    b.HasOne("WheelFactory.Models.Orders", null)
+                    b.HasOne("WheelFactory.Models.Orders", "Order")
                         .WithMany("Tasks")
-                        .HasForeignKey("OrdersOrderId");
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("WheelFactory.Models.Transaction", b =>
                 {
-                    b.HasOne("WheelFactory.Models.Orders", null)
+                    b.HasOne("WheelFactory.Models.Orders", "Order")
                         .WithMany("Transactions")
-                        .HasForeignKey("OrdersOrderId");
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("WheelFactory.Models.Orders", b =>

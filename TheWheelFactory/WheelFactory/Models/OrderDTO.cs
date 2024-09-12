@@ -1,11 +1,8 @@
-﻿
-namespace WheelFactory.Models
+﻿namespace WheelFactory.Models
 {
     public class OrderDTO
     {
-        
-     
-           
+             
             public string ClientName { get; set; }
             public int Year { get; set; }
             public int Make { get; set; }

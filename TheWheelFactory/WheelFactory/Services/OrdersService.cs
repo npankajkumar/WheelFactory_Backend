@@ -10,15 +10,27 @@ namespace WheelFactory.Services
         {
             _context = context;
         }
+       
         public List<Orders> GetOrders()
         {
-            return _context.Order.ToList();
+            var orders =_context.OrderDetails.ToList();
+            return (orders);
+
         }
         public Orders GetById(int id)
         {
-            var orders =_context.Order.Find(id);
+            var orders = _context.OrderDetails.Find(id);
             return (orders);
+        }
 
+
+        public List<Orders> GetComplete()
+        {
+            return _context.OrderDetails.Where(o => o.Status == "completed").ToList();
+        }
+        public List<Orders> GetCurrent()
+        {
+            return _context.OrderDetails.Where(o => o.Status != "completed").ToList();
         }
         public bool AddOrders(OrderDTO order)
         {
@@ -32,13 +44,13 @@ namespace WheelFactory.Services
             obj.DamageType = order.DamageType;
             obj.ImageUrl = order.ImageUrl;
             obj.CreatedAt = order.CreatedAt;
-            _context.Order.Add(obj);
+            _context.OrderDetails.Add(obj);
             _context.SaveChanges();
             return true;
         }
         public bool UpdateOrder(int id, OrderDTO orderDto)
         {
-            var order = _context.Order.Find(id);
+            var order = _context.OrderDetails.Find(id);
 
             if (order != null)
             {
@@ -59,18 +71,25 @@ namespace WheelFactory.Services
             return false; 
         }
 
-        public bool DeleteOrder(int id)
+        public bool UpdateInventOrder(int id,OrderDTO value)
         {
-            var order = _context.Order.Find(id);
+            var order = _context.OrderDetails.Find(id);
+
             if (order != null)
             {
-                _context.Order.Remove(order);
+                order.Status = value.Status;
                 _context.SaveChanges();
                 return true;
             }
             return false;
         }
+        
+        public List<Orders> GetInventOrders()
+        {
+            return _context.OrderDetails.Where(o=>o.Status=="neworder").ToList();
+        }
 
+        
 
     }
 }

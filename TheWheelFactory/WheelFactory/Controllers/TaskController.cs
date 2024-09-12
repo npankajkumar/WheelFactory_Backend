@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WheelFactory.Models;
 using WheelFactory.Services;
 using Task = WheelFactory.Models.Task;
@@ -12,61 +13,114 @@ namespace WheelFactory.Controllers
     public class TaskController : ControllerBase
     {
         private readonly TaskService _task;
+        private readonly OrdersService _orders;
+        private readonly WheelContext _wc;
         public TaskController(WheelContext wc)
         {
-            _task = new TaskService(wc);
+            _wc = wc;
+            _task = new TaskService(_wc);
+            _orders = new OrdersService(wc);
         }
 
-        // GET: api/<ValuesController>
+        //GET: api/<ValuesController>
         [HttpGet]
         public IEnumerable<Task> Get()
         {
             return _task.GetTask();
         }
-
-
-        // GET api/<ValuesController>/5
         [HttpGet("{id}")]
-        public Task Get(int id)
+        public List<Task> Get(int id)
         {
             return _task.GetTaskById(id);
         }
 
-        // POST api/<ValuesController>
-        [HttpPost]
-        public IActionResult Post([FromBody] Task value)
-        {
-            var t = _task.AddTask(value);
-            if (value != null)
-            {
-                return Ok(value); 
-            }
-            return BadRequest();
-        }
 
-        // PUT api/<ValuesController>/5
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Task value)
+        [HttpGet("soldering")]
+        public IActionResult GetOrdersSoldering(int id)
         {
-            var t= _task.UpdateTask(id,value);
-            if(value != null)
+            var sold = _task.GetSold();
+
+            if (sold != null)
             {
-                    return Ok(t);
+                return Ok(sold);
             }
             return BadRequest();
 
         }
-
-        // DELETE api/<ValuesController>/5
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        [HttpPost("soldering")]
+        public IActionResult PostOrdersSoldering([FromBody] SandDTO value)
         {
-            if (_task.DeleteTask(id))
+            if (_task.AddSandOrders(value))
             {
-                return Ok();
+                var obj = _wc.OrderDetails.Find(value.OrderId);
+                obj.Status = "Painting";
+                _wc.OrderDetails.Update(obj);
+                _wc.SaveChanges();
+
+                return Ok(value);
             }
-            return BadRequest();    
+            return BadRequest();
 
         }
+
+        [HttpGet("painting")]
+
+        public IActionResult GetOrdersPainting()
+        {
+            var sold = _task.GetPaint();
+
+            if (sold != null)
+            {
+                return Ok(sold);
+            }
+            return BadRequest();
+
+        }
+        [HttpPost("painting")]
+        public IActionResult PostOrdersPainting([FromBody] PaintDTO value)
+        {
+            if (_task.AddPaintOrders(value))
+            {
+                var obj = _wc.OrderDetails.Find(value.OrderId);
+                obj.Status = "Packaging";
+                _wc.OrderDetails.Update(obj);
+                _wc.SaveChanges();
+                return Ok(value);
+            }
+            return BadRequest();
+        }
+
+
+        [HttpGet("packaging")]
+
+        public IActionResult GetOrdersPackaging()
+        {
+            var sold = _task.GetPack();
+
+            if (sold != null)
+            {
+                return Ok(sold);
+            }
+            return BadRequest();
+
+        }
+        [HttpPost("packaging")]
+        public IActionResult PostOrdersPackaging([FromBody] PackDTO value)
+        {
+             
+            if (_task.AddPackOrders(value))
+            {
+                var obj = _wc.OrderDetails.Find(value.OrderId);
+                obj.Status = "completed";
+                _wc.OrderDetails.Update(obj);
+                _wc.SaveChanges();
+                return Ok(value);
+            }
+            return BadRequest();
+        }
+
+
     }
 }
+
+

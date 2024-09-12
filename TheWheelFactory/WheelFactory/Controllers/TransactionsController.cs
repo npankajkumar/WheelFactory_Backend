@@ -26,7 +26,6 @@ namespace WheelFactory.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTransaction(int id)
         {
-            // Find the transaction by ID and include related Order
             var transaction = await _context.Transactions.Where(a => a.OrderId == id).ToListAsync();
                                             
 
@@ -37,7 +36,6 @@ namespace WheelFactory.Controllers
         // GET: api/Transactions
         public async Task<IActionResult> GetTransactions()
         {
-            // Include related Order data in the response
             var trans = await _context.Transactions.ToListAsync();
             return Ok(trans);
         }
