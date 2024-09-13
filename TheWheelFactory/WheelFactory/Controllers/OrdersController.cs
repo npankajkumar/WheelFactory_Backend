@@ -69,11 +69,6 @@ namespace WheelFactory.Controllers
         {
             if (_order.UpdateOrder(id, value))
             {
-                    Transaction ob = new Transaction();
-                    ob.OrderId = id;
-                    ob.Status = value.Status;
-                    _wheelContext.Transactions.Add(ob);
-                    _wheelContext.SaveChanges();
                 return Ok(value);
             }
             return BadRequest();

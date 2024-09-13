@@ -21,8 +21,7 @@ namespace WheelFactory.Services
         [HttpGet]
         public List<Task> GetTask()
         {
-            var tasks = (_context.Tasks.ToList());
-            return (tasks);
+            return _context.Tasks.ToList();
         }
         public List<Task> GetTaskById(int id)
         {
@@ -34,6 +33,15 @@ namespace WheelFactory.Services
         {
             var orders = _context.OrderDetails.Where(o => o.Status == "Soldering").ToList();
             return orders;
+        }
+        public List<Task> GetSoldId(int id)
+        {
+            return _context.Tasks.Where(b => b.OrderId == id && b.Status=="soldering").ToList();
+        }
+
+        public List<Task> GetPaintId(int id)
+        {
+            return _context.Tasks.Where(b => b.OrderId == id && b.Status=="painting").ToList();
         }
 
         public bool AddSandOrders(SandDTO sand)

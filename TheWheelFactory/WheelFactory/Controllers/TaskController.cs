@@ -47,6 +47,25 @@ namespace WheelFactory.Controllers
             return BadRequest();
 
         }
+
+
+        [HttpGet("soldering/{id}")]
+        public List<Task> GetSolderingById(int id)
+        {
+            return _task.GetSoldId(id);
+
+        }
+        [HttpGet("painting/{id}")]
+        public List<Task> GetPaintingById(int id)
+        {
+            return _task.GetPaintId(id);
+
+        }
+
+
+
+
+
         [HttpPost("soldering")]
         public IActionResult PostOrdersSoldering([FromBody] SandDTO value)
         {

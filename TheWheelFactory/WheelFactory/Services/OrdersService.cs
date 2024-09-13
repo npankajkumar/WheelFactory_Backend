@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using WheelFactory.Models;
 
 namespace WheelFactory.Services
@@ -19,8 +22,7 @@ namespace WheelFactory.Services
         }
         public Orders GetById(int id)
         {
-            var orders = _context.OrderDetails.Find(id);
-            return (orders);
+            return _context.OrderDetails.Find(id);
         }
 
 
@@ -37,7 +39,7 @@ namespace WheelFactory.Services
             Orders obj = new Orders();
             obj.ClientName = order.ClientName;
             obj.Notes = order.Notes;
-            obj.Status = order.Status;
+            obj.Status = "neworder";
             obj.Year = order.Year;
             obj.Make = order.Make;
             obj.Model = order.Model;
@@ -77,19 +79,21 @@ namespace WheelFactory.Services
 
             if (order != null)
             {
-                order.Status = value.Status;
+                order.Status ="Soldering";
                 _context.SaveChanges();
                 return true;
             }
             return false;
         }
         
-        public List<Orders> GetInventOrders()
-        {
-            return _context.OrderDetails.Where(o=>o.Status=="neworder").ToList();
-        }
 
-        
-
+public List<Orders> GetInventOrders()
+    {
+        return _context.OrderDetails
+                       .Where(o => o.Status == "neworder")
+                       .ToList();
     }
+
+
+}
 }

@@ -34,6 +34,7 @@ namespace WheelFactory.Controllers
 
 
         // GET: api/Transactions
+        [HttpGet()]
         public async Task<IActionResult> GetTransactions()
         {
             var trans = await _context.Transactions.ToListAsync();

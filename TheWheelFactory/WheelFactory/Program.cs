@@ -1,31 +1,38 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using System.Configuration;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using WheelFactory.Models;
 
-namespace WheelFactory;
-public class Program
-
+namespace WheelFactory
 {
-
-    private static void Main(string[] args)
+    public class Program
     {
-        var builder = WebApplication.CreateBuilder(args);
+        private static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container
+            // Add services to the container
+            builder.Services.AddSwaggerGen();
+            builder.Services.AddControllers();
+            builder.Services.AddDbContext<WheelContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("wheel")));
 
-        builder.Services.AddControllers();
-        builder.Services.AddDbContext<WheelContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("wheel")));
-       
+            var app = builder.Build();
 
-        
-        var app = builder.Build();
+            // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
 
-        // Configure the HTTP request pipeline.
+            }
 
-        app.UseAuthorization();
+            app.UseAuthorization();
 
-        app.MapControllers();
+            app.MapControllers();
 
-        app.Run();
+            app.Run();
+        }
     }
 }

@@ -81,7 +81,12 @@ namespace WheelFactory.Migrations
 
                     b.HasKey("OrderId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetails", t =>
+                        {
+                            t.HasTrigger("trigger_log");
+                        });
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("WheelFactory.Models.PaintType", b =>
