@@ -104,6 +104,19 @@ namespace WheelFactory.Controllers
             return BadRequest();
 
         }
+        [HttpGet("allpainting")]
+        public IActionResult GetAllPainting()
+        {
+            var sold = _task.GetAllPaint();
+
+            if (sold != null)
+            {
+                return Ok(sold);
+            }
+            return BadRequest();
+
+        }
+
         [HttpPost("packaging")]
         public IActionResult PostOrdersPackaging([FromBody] PackDTO value)
         {

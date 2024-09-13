@@ -32,7 +32,7 @@ namespace WheelFactory.Services
         }
         public List<Orders> GetSold()
         {
-            var orders = _context.OrderDetails.Where(o => o.Status == "soldering").ToList();
+            var orders = _context.OrderDetails.Where(o => o.Status == "Soldering").ToList();
             return orders;
         }
 
@@ -42,37 +42,38 @@ namespace WheelFactory.Services
             obj.OrderId=sand.OrderId;
             obj.SandBlastingLevel = sand.SandBlastingLevel;
             obj.Notes = sand.Notes;
-            obj.Status = sand.Status;
+            obj.Status = "Soldering";
             obj.ImageUrl = sand.ImageUrl;
             obj.CreatedAt = sand.CreatedAt;
             _context.Tasks.Add(obj);
             _context.SaveChanges();
             return true;
-        }    
-        
-        public bool AddInvent(OrderDTO value)
-        {
-            var orders = _orders.AddOrders(value);
-            if(orders!=null)
-            {
-                _context.SaveChanges();
-                return true;
-            }
-            return false;
         }
-        public List<Task> GetPaint()
-        {
-            var tasks = _context.Tasks.Include(e => e.OrderId).Where(o => o.Status == "painting").ToList();
-            return tasks;
 
+        public List<Orders> GetPaint()
+        {
+            var orders = _context.OrderDetails.Where(o => o.Status == "Painting").ToList();
+            return orders;
+        }
+        public List<Task> GetAllPaint()
+        {
+            var tas = _context.Tasks.Where(o => o.Status == "Soldering").ToList();
+            return tas;
+        }
+
+        public List<Orders> GetPack()
+        {
+            var orders = _context.OrderDetails.Where(o => o.Status == "Packaging").ToList();
+            return orders;
         }
 
         public bool AddPaintOrders(PaintDTO p)
         {
 
             Task obj = new Task();
+            obj.OrderId = p.OrderId;
             obj.Notes = p.Notes;
-            obj.Status = p.Status;
+            obj.Status = "Painting";
             obj.PColor = p.PColor;
             obj.PType = p.PType;
             obj.ImageUrl = p.ImageUrl;
@@ -81,19 +82,15 @@ namespace WheelFactory.Services
             _context.SaveChanges();
             return true;
         }
-        public List<Task> GetPack()
-        {
-            var tasks = _context.Tasks.Include(e => e.OrderId).Where(o => o.Status == "packaging").ToList();
-            return tasks;
-
-        }
+        
 
         public bool AddPackOrders(PackDTO p)
         {
 
             Task obj = new Task();
+            obj.OrderId = p.OrderId;
             obj.Notes = p.Notes;
-            obj.Status = p.Status;
+            obj.Status ="Packaging";
             obj.IRating = p.IRating;
             obj.ImageUrl = p.ImageUrl;
             obj.CreatedAt = p.CreatedAt;
@@ -101,26 +98,6 @@ namespace WheelFactory.Services
             _context.SaveChanges();
             return true;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         public bool UpdateTask(int id, Task t)
         {

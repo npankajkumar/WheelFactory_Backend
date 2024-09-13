@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using System.Configuration;
+using System.Reflection.Metadata;
 using System.Threading.RateLimiting;
 
 namespace WheelFactory.Models
@@ -20,6 +21,11 @@ namespace WheelFactory.Models
         public DbSet<SandBlastingLevels> SandBlasting { get; set; }
         public DbSet<PaintType> Paint { get; set; }
         public DbSet<Rating> Rate { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Orders>()
+                .ToTable(tb => tb.HasTrigger("trigger_log"));
+        }
 
     }
 }
