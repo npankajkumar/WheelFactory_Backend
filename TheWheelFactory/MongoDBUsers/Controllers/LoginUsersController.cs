@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MongoDbDemo.Repositories;
+using MongoDBUsers.Helpers;
 using MongoDBUsers.Models;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace MongoDBUsers.Controllers
 {
@@ -10,37 +9,64 @@ namespace MongoDBUsers.Controllers
     [ApiController]
     public class LoginUsersController : ControllerBase
     {
-        private readonly LoginUsersContext _context=new LoginUsersContext();
-        // GET: api/<LoginUsersController>
-        [HttpGet]
-        public IEnumerable<LoginUsers> Get()
+        private readonly LoginUsersContext _context = new LoginUsersContext();
+        private readonly TokenHelper _tokenHelper = new TokenHelper();
+
+        // API 1: Validate user and return token + role (only userid and password required)
+        [HttpPost("validate")]
+        public IActionResult Validate([FromBody] LoginDTO value)
         {
-            return _context.GetUsers();
+            string userid = value.userid;
+            string password = value.password;
+
+            if (string.IsNullOrEmpty(userid) || string.IsNullOrEmpty(password))
+                return BadRequest("Invalid Request");
+
+            // Fetch the user from MongoDB based on userid and password
+            var user = _context.GetUserById(userid);
+            if (user != null && user.password == password)
+            {
+                var token = _tokenHelper.GenerateToken(user);
+                return Ok(new { Status = "Success", Token = token, Role = user.role });
+            }
+
+            return Unauthorized(new { Status = "Failed", Message = "Invalid credentials" });
         }
 
-        // GET api/<LoginUsersController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        // API 2: Get role by userid
+        [HttpGet("role/{userid}")]
+        public IActionResult GetUserRole(string userid)
         {
-            return "value";
+            var role = _context.GetUserRole(userid);
+            if (string.IsNullOrEmpty(role))
+                return NotFound(new { Status = "Failed", Message = "User not found" });
+
+            return Ok(new { UserId = userid, Role = role });
         }
 
-        // POST api/<LoginUsersController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        // API 3: Get all users
+        [HttpGet("all")]
+        public IActionResult GetAllUsers()
         {
+            var users = _context.GetUsers();
+            return Ok(users);
         }
 
-        // PUT api/<LoginUsersController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        // API 4: Change password
+        [HttpPost("change-password")]
+        public IActionResult ChangePassword([FromBody] dynamic payload)
         {
-        }
+            string userid = payload.userid;
+            string newPassword = payload.newPassword;
 
-        // DELETE api/<LoginUsersController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            if (string.IsNullOrEmpty(userid) || string.IsNullOrEmpty(newPassword))
+                return BadRequest("Invalid Request");
+
+            var updated = _context.UpdatePassword(userid, newPassword);
+            if (updated)
+                return Ok(new { Status = "Success", Message = "Password updated successfully" });
+
+            return NotFound(new { Status = "Failed", Message = "User not found" });
         }
     }
 }

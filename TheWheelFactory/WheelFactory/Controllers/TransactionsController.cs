@@ -27,7 +27,6 @@ namespace WheelFactory.Controllers
         public async Task<IActionResult> GetTransaction(int id)
         {
             var transaction = await _context.Transactions.Where(a => a.OrderId == id).ToListAsync();
-                                            
 
             return Ok(transaction);
         }
