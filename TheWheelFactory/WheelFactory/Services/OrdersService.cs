@@ -34,6 +34,13 @@ namespace WheelFactory.Services
         {
             return _context.OrderDetails.Where(o => o.Status != "completed").ToList();
         }
+
+        public List<Orders> GetScraped()
+        {
+            return _context.OrderDetails.Where(o => o.Status == "Scrap").ToList();
+        }
+
+
         public bool AddOrders(OrderDTO order)
         {
             Orders obj = new Orders();
@@ -72,6 +79,21 @@ namespace WheelFactory.Services
 
             return false; 
         }
+
+        public bool ScrapOrder(int id, OrderDTO orderDto)
+        {
+            var order = _context.OrderDetails.Find(id);
+
+            if (order != null)
+            {
+                order.Status = "Scrap";
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
+        }
+
+
 
         public bool UpdateInventOrder(int id,OrderDTO value)
         {

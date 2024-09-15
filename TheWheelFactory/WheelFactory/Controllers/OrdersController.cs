@@ -49,6 +49,14 @@ namespace WheelFactory.Controllers
             return _order.GetComplete();
         }
 
+        [HttpGet("scraped")]
+        public List<Orders> GetScrapedOrders()
+        {
+            return _order.GetScraped();
+        }
+
+
+
 
         // POST api/<OrdersController>
         [HttpPost]
@@ -74,6 +82,19 @@ namespace WheelFactory.Controllers
             return BadRequest();
 
         }
+
+        [HttpPut("scrap/{id}")]
+        public IActionResult PutScrapOrder(int id, [FromBody] OrderDTO value)
+        {
+            if (_order.ScrapOrder(id, value))
+            {
+                return Ok(value);
+            }
+            return BadRequest();
+
+        }
+
+
         [HttpGet("Inventory")]
         public IActionResult GetOrdersInventory()
         {

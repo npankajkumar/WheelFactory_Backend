@@ -31,7 +31,7 @@ namespace WheelFactory.Services
         }
         public List<Orders> GetSold()
         {
-            var orders = _context.OrderDetails.Where(o => o.Status == "Soldering").ToList();
+            var orders = _context.OrderDetails.Where(o => o.Status == "Soldering" || o.Status=="Redo").ToList();
             return orders;
         }
         public List<Task> GetSoldId(int id)
