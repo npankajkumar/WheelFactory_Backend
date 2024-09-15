@@ -14,23 +14,23 @@ namespace MongoDBUsers
             builder.Services.AddSwaggerGen();
 
             // Add JWT Authentication
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = "JwtBearer";
-                options.DefaultChallengeScheme = "JwtBearer";
-            }).AddJwtBearer("JwtBearer", jwtOptions =>
-            {
-                var key = System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]);
-                jwtOptions.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(key)
-                };
-            });
+            //builder.Services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = "JwtBearer";
+            //    options.DefaultChallengeScheme = "JwtBearer";
+            //}).AddJwtBearer("JwtBearer", jwtOptions =>
+            //{
+            //    var key = System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]);
+            //    jwtOptions.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+            //    {
+            //        ValidateIssuer = true,
+            //        ValidateAudience = true,
+            //        ValidateIssuerSigningKey = true,
+            //        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            //        ValidAudience = builder.Configuration["Jwt:Audience"],
+            //        IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(key)
+            //    };
+            //});
 
             var app = builder.Build();
 
