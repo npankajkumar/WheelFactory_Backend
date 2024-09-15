@@ -54,10 +54,10 @@ namespace MongoDBUsers.Controllers
 
         // API 4: Change password
         [HttpPost("change-password")]
-        public IActionResult ChangePassword([FromBody] dynamic payload)
+        public IActionResult ChangePassword([FromBody] LoginDTO payload)
         {
             string userid = payload.userid;
-            string newPassword = payload.newPassword;
+            string newPassword = payload.password;
 
             if (string.IsNullOrEmpty(userid) || string.IsNullOrEmpty(newPassword))
                 return BadRequest("Invalid Request");
