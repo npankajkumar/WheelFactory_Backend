@@ -14,7 +14,6 @@ namespace WheelFactory.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
 
     public class TransactionsController : ControllerBase
     {

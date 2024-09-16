@@ -23,6 +23,12 @@ namespace WheelFactory.Controllers
         }
 
         //GET: api/<ValuesController>
+        [HttpGet("packaging/{id}")]
+        public List<Task> GetPackagingById(int id)
+        {
+            return _task.GetPackId(id);
+
+        }
         [HttpGet]
         public IEnumerable<Task> Get()
         {

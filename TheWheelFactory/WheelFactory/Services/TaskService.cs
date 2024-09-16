@@ -29,6 +29,10 @@ namespace WheelFactory.Services
             return task;
 
         }
+        public List<Task> GetPackId(int id)
+        {
+            return _context.Tasks.Where(b => b.OrderId == id && b.Status == "packaging").ToList();
+        }
         public List<Orders> GetSold()
         {
             var orders = _context.OrderDetails.Where(o => o.Status == "Soldering" || o.Status=="Redo").ToList();
