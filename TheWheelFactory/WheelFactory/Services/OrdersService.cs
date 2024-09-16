@@ -41,37 +41,20 @@ namespace WheelFactory.Services
         }
 
 
-        public bool AddOrders(OrderDTO order)
+        public bool AddOrders(Orders order)
         {
-            Orders obj = new Orders();
-            obj.ClientName = order.ClientName;
-            obj.Notes = order.Notes;
-            obj.Status = "neworder";
-            obj.Year = order.Year;
-            obj.Make = order.Make;
-            obj.Model = order.Model;
-            obj.DamageType = order.DamageType;
-            obj.ImageUrl = order.ImageUrl;
-            obj.CreatedAt = order.CreatedAt;
-            _context.OrderDetails.Add(obj);
+            _context.OrderDetails.Add(order);
             _context.SaveChanges();
             return true;
         }
-        public bool UpdateOrder(int id, OrderDTO orderDto)
+        public bool UpdateOrder(int id, String status)
         {
             var order = _context.OrderDetails.Find(id);
 
             if (order != null)
-            {
-
-                order.ClientName = orderDto.ClientName;
-                order.Notes = orderDto.Notes;
-                order.Status = orderDto.Status;
-                order.Year = orderDto.Year;
-                order.Make = orderDto.Make;
-                order.Model = orderDto.Model;
-                order.DamageType = orderDto.DamageType;
-                order.ImageUrl = orderDto.ImageUrl;
+            { 
+                order.Status = status;
+                
                 _context.SaveChanges();
 
                 return true;

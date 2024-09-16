@@ -12,9 +12,10 @@ namespace WheelFactory.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class OrdersController : ControllerBase
     {
+        private readonly string _basePath = @"C:\Users\pulkit\Desktop\WheelFactory\Backend\backend\TheWheelFactory\WheelFactory\wwwroot\images\";
+
         private readonly OrdersService _order;
         private readonly WheelContext _wheelContext;
         public OrdersController(WheelContext wc)
@@ -62,10 +63,41 @@ namespace WheelFactory.Controllers
 
         // POST api/<OrdersController>
         [HttpPost]
-        public IActionResult Post([FromBody] OrderDTO value,int id)
+        public IActionResult Post([FromForm] OrderDTO value,int id)
         {
 
-            if (_order.AddOrders(value))
+            try
+            {
+                if (value.ImageUrl == null || value.ImageUrl.Length == 0)
+                    return BadRequest("No file uploaded.");
+
+                var originalFileName = Path.GetFileName(value.ImageUrl.FileName);
+                var filePath = Path.Combine(_basePath, originalFileName);
+
+                if (!Directory.Exists(_basePath))
+                {
+                    Directory.CreateDirectory(_basePath);
+                }
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    value.ImageUrl.CopyToAsync(stream);
+                }
+
+                
+            }
+            catch { }
+            Orders o = new Orders();
+            o.ClientName = value.ClientName;
+            o.Year= value.Year;
+            o.Make = value.Make;
+            o.Model = value.Model;
+            o.Notes = value.Notes;
+            o.Status = "neworder";
+            o.DamageType = value.DamageType;
+            o.ImageUrl = "http://localhost:5041/images/" + value.ImageUrl.FileName;
+
+            if (_order.AddOrders(o))
             {
                 return Ok(value);
             }
@@ -75,9 +107,9 @@ namespace WheelFactory.Controllers
 
         // PUT api/<OrdersController>/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] OrderDTO value)
+        public IActionResult Put(int id, [FromForm] OrderDTO value)
         {
-            if (_order.UpdateOrder(id, value))
+            if (_order.UpdateOrder(id, value.Status))
             {
                 return Ok(value);
             }
@@ -86,7 +118,7 @@ namespace WheelFactory.Controllers
         }
 
         [HttpPut("scrap/{id}")]
-        public IActionResult PutScrapOrder(int id, [FromBody] OrderDTO value)
+        public IActionResult PutScrapOrder(int id, [FromForm] OrderDTO value)
         {
             if (_order.ScrapOrder(id, value))
             {
@@ -108,7 +140,7 @@ namespace WheelFactory.Controllers
             return BadRequest();
         }
         [HttpPut("Inventory/{id}")]
-        public IActionResult PutOrdersInventory([FromBody]OrderDTO value,int id)
+        public IActionResult PutOrdersInventory([FromForm]OrderDTO value,int id)
         {
             if(_order.UpdateInventOrder(id,value))
             {

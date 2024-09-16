@@ -7,11 +7,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Versioning;
 using WheelFactory.Models;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace WheelFactory.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class TransactionsController : ControllerBase
     {
         private readonly WheelContext _context;

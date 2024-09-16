@@ -42,6 +42,7 @@ namespace WheelFactory
                 app.UseSwaggerUI();
 
             }
+            app.UseStaticFiles();
 
             app.UseAuthentication();
 
