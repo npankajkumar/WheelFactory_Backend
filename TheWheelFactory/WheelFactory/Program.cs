@@ -29,11 +29,17 @@ namespace WheelFactory
 
             // Add services to the container
             builder.Services.AddSwaggerGen();
+            builder.Services.AddCors();
             builder.Services.AddControllers();
             builder.Services.AddDbContext<WheelContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("wheel")));
 
             var app = builder.Build();
+            app.UseCors(option => {
+                option.AllowAnyOrigin();
+                option.AllowAnyMethod();
+                option.AllowAnyHeader();
+            });
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
