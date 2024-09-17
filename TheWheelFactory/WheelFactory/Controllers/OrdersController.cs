@@ -14,7 +14,7 @@ namespace WheelFactory.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        private readonly string _basePath = @"C:\Users\pulkit\Desktop\cc\backend\TheWheelFactory\WheelFactory\wwwroot\images\";
+        private readonly string _basePath = @"C:\Users\pulkit\Desktop\WheelFactory\Backend\backend\TheWheelFactory\WheelFactory\wwwroot\images\";
 
         private readonly OrdersService _order;
         private readonly WheelContext _wheelContext;

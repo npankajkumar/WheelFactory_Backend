@@ -12,7 +12,7 @@ namespace WheelFactory.Controllers
     [ApiController]
     public class TaskController : ControllerBase
     {
-        private readonly string _basePath = @"C:\Users\pulkit\Desktop\cc\backend\TheWheelFactory\WheelFactory\wwwroot\images\";
+        private readonly string _basePath = @"C:\Users\pulkit\Desktop\WheelFactory\Backend\backend\TheWheelFactory\WheelFactory\wwwroot\images\";
 
         private readonly TaskService _task;
         private readonly OrdersService _orders;
