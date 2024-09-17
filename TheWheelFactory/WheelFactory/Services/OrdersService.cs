@@ -63,7 +63,7 @@ namespace WheelFactory.Services
             return false; 
         }
 
-        public bool ScrapOrder(int id, OrderDTO orderDto)
+        public bool ScrapOrder(int id)
         {
             var order = _context.OrderDetails.Find(id);
 
@@ -78,7 +78,7 @@ namespace WheelFactory.Services
 
 
 
-        public bool UpdateInventOrder(int id,OrderDTO value)
+        public bool UpdateInventOrder(int id)
         {
             var order = _context.OrderDetails.Find(id);
 

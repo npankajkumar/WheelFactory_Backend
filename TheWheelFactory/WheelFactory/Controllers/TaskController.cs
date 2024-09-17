@@ -134,7 +134,7 @@ namespace WheelFactory.Controllers
 
         }
         [HttpPost("painting")]
-        public IActionResult PostOrdersPainting([FromForm] PaintDTO value)
+        public async Task<IActionResult> PostOrdersPainting([FromForm] PaintDTO value)
         {
             try
             {
@@ -151,7 +151,7 @@ namespace WheelFactory.Controllers
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    value.ImageUrl.CopyToAsync(stream);
+                    await value.ImageUrl.CopyToAsync(stream);
                 }
 
 
@@ -205,7 +205,7 @@ namespace WheelFactory.Controllers
         }
 
         [HttpPost("packaging")]
-        public IActionResult PostOrdersPackaging([FromForm] PackDTO value)
+        public async Task<IActionResult> PostOrdersPackaging([FromForm] PackDTO value)
         {
             try
             {
@@ -222,7 +222,7 @@ namespace WheelFactory.Controllers
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    value.ImageUrl.CopyToAsync(stream);
+                   await value.ImageUrl.CopyToAsync(stream);
                 }
 
 

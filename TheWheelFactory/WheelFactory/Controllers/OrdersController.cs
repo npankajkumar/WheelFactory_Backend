@@ -15,7 +15,6 @@ namespace WheelFactory.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly string _basePath = @"C:\Users\pulkit\Desktop\WheelFactory\Backend\backend\TheWheelFactory\WheelFactory\wwwroot\images\";
-
         private readonly OrdersService _order;
         private readonly WheelContext _wheelContext;
         public OrdersController(WheelContext wc)
@@ -63,9 +62,8 @@ namespace WheelFactory.Controllers
 
         // POST api/<OrdersController>
         [HttpPost]
-        public IActionResult Post([FromForm] OrderDTO value,int id)
+        public async Task<IActionResult> Post([FromForm] OrderDTO value)
         {
-
             try
             {
                 if (value.ImageUrl == null || value.ImageUrl.Length == 0)
@@ -74,35 +72,44 @@ namespace WheelFactory.Controllers
                 var originalFileName = Path.GetFileName(value.ImageUrl.FileName);
                 var filePath = Path.Combine(_basePath, originalFileName);
 
+                // Ensure the directory exists
                 if (!Directory.Exists(_basePath))
                 {
                     Directory.CreateDirectory(_basePath);
                 }
 
+                // Use 'async' file stream to handle file upload properly
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    value.ImageUrl.CopyToAsync(stream);
+                    await value.ImageUrl.CopyToAsync(stream);  // Ensure this is awaited
                 }
 
-                
-            }
-            catch { }
-            Orders o = new Orders();
-            o.ClientName = value.ClientName;
-            o.Year= value.Year;
-            o.Make = value.Make;
-            o.Model = value.Model;
-            o.Notes = value.Notes;
-            o.Status = "neworder";
-            o.DamageType = value.DamageType;
-            o.ImageUrl = "http://localhost:5041/images/" + value.ImageUrl.FileName;
+                // Create the order object and save the image URL
+                Orders o = new Orders
+                {
+                    ClientName = value.ClientName,
+                    Year = value.Year,
+                    Make = value.Make,
+                    Model = value.Model,
+                    Notes = value.Notes,
+                    Status = "neworder",
+                    DamageType = value.DamageType,
+                    ImageUrl = "http://localhost:5041/images/" + originalFileName
+                };
 
-            if (_order.AddOrders(o))
+                // Save order to the database
+                if (_order.AddOrders(o))
+                {
+                    return Ok(o);
+                }
+
+                return BadRequest("Failed to add the order.");
+            }
+            catch (Exception ex)
             {
-                return Ok(value);
+                // Log the exception for debugging purposes
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
-            return BadRequest();
-
         }
 
         // PUT api/<OrdersController>/5
@@ -118,11 +125,11 @@ namespace WheelFactory.Controllers
         }
 
         [HttpPut("scrap/{id}")]
-        public IActionResult PutScrapOrder(int id, [FromForm] OrderDTO value)
+        public IActionResult PutScrapOrder(int id)
         {
-            if (_order.ScrapOrder(id, value))
+            if (_order.ScrapOrder(id))
             {
-                return Ok(value);
+                return Ok("Scraped order "+id);
             }
             return BadRequest();
 
@@ -140,11 +147,11 @@ namespace WheelFactory.Controllers
             return BadRequest();
         }
         [HttpPut("Inventory/{id}")]
-        public IActionResult PutOrdersInventory([FromForm]OrderDTO value,int id)
+        public IActionResult PutOrdersInventory( int id)
         {
-            if(_order.UpdateInventOrder(id,value))
+            if (_order.UpdateInventOrder(id))
             {
-                return Ok(value);
+                return Ok("status changed to Soldering");
             }
             return BadRequest();
         }
