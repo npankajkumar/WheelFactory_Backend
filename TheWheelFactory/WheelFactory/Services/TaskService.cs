@@ -48,16 +48,9 @@ namespace WheelFactory.Services
             return _context.Tasks.Where(b => b.OrderId == id && b.Status=="painting").ToList();
         }
 
-        public bool AddSandOrders(SandDTO sand)
+        public bool AddSandOrders(Task sand)
         {
-            Task obj = new Task();
-            obj.OrderId=sand.OrderId;
-            obj.SandBlastingLevel = sand.SandBlastingLevel;
-            obj.Notes = sand.Notes;
-            obj.Status = "Soldering";
-            obj.ImageUrl = sand.ImageUrl;
-            obj.CreatedAt = sand.CreatedAt;
-            _context.Tasks.Add(obj);
+            _context.Tasks.Add(sand);
             _context.SaveChanges();
             return true;
         }
@@ -79,34 +72,19 @@ namespace WheelFactory.Services
             return orders;
         }
 
-        public bool AddPaintOrders(PaintDTO p)
-        {
-
-            Task obj = new Task();
-            obj.OrderId = p.OrderId;
-            obj.Notes = p.Notes;
-            obj.Status = "Painting";
-            obj.PColor = p.PColor;
-            obj.PType = p.PType;
-            obj.ImageUrl = p.ImageUrl;
-            obj.CreatedAt = p.CreatedAt;
-            _context.Tasks.Add(obj);
+        public bool AddPaintOrders(Task p)
+        { 
+            _context.Tasks.Add(p);
             _context.SaveChanges();
             return true;
         }
         
 
-        public bool AddPackOrders(PackDTO p)
+        public bool AddPackOrders(Task p)
         {
 
-            Task obj = new Task();
-            obj.OrderId = p.OrderId;
-            obj.Notes = p.Notes;
-            obj.Status ="Packaging";
-            obj.IRating = p.IRating;
-            obj.ImageUrl = p.ImageUrl;
-            obj.CreatedAt = p.CreatedAt;
-            _context.Tasks.Add(obj);
+            
+            _context.Tasks.Add(p);
             _context.SaveChanges();
             return true;
         }

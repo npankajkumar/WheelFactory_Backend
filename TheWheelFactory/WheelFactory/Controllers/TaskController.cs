@@ -12,6 +12,8 @@ namespace WheelFactory.Controllers
     [ApiController]
     public class TaskController : ControllerBase
     {
+        private readonly string _basePath = @"C:\Users\pulkit\Desktop\cc\backend\TheWheelFactory\WheelFactory\wwwroot\images\";
+
         private readonly TaskService _task;
         private readonly OrdersService _orders;
         private readonly WheelContext _wc;
@@ -75,9 +77,37 @@ namespace WheelFactory.Controllers
 
 
         [HttpPost("soldering")]
-        public IActionResult PostOrdersSoldering([FromBody] SandDTO value)
-        {
-            if (_task.AddSandOrders(value))
+        public IActionResult PostOrdersSoldering([FromForm] SandDTO value)
+        { 
+            try
+            {
+                if (value.ImageUrl == null || value.ImageUrl.Length == 0)
+                    return BadRequest("No file uploaded.");
+
+                var originalFileName =  Path.GetFileName(value.ImageUrl.FileName);
+                var filePath = Path.Combine(_basePath, originalFileName);
+
+                if (!Directory.Exists(_basePath))
+                {
+                    Directory.CreateDirectory(_basePath);
+                }
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    value.ImageUrl.CopyToAsync(stream);
+                }
+
+
+            }
+            catch { }
+            Task t = new Task();
+            t.OrderId = value.OrderId;
+            t.SandBlastingLevel = value.SandBlastingLevel;
+            t.Notes = value.Notes;
+            t.Status ="Soldering";
+            t.ImageUrl = "http://localhost:5041/images/" + value.ImageUrl.FileName;
+
+            if (_task.AddSandOrders(t))
             {
                 var obj = _wc.OrderDetails.Find(value.OrderId);
                 obj.Status = "Painting";
@@ -104,9 +134,39 @@ namespace WheelFactory.Controllers
 
         }
         [HttpPost("painting")]
-        public IActionResult PostOrdersPainting([FromBody] PaintDTO value)
+        public IActionResult PostOrdersPainting([FromForm] PaintDTO value)
         {
-            if (_task.AddPaintOrders(value))
+            try
+            {
+                if (value.ImageUrl == null || value.ImageUrl.Length == 0)
+                    return BadRequest("No file uploaded.");
+
+                var originalFileName =  Path.GetFileName(value.ImageUrl.FileName);
+                var filePath = Path.Combine(_basePath, originalFileName);
+
+                if (!Directory.Exists(_basePath))
+                {
+                    Directory.CreateDirectory(_basePath);
+                }
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    value.ImageUrl.CopyToAsync(stream);
+                }
+
+
+            }
+            catch { }
+            Task t = new Task();
+            t.OrderId = value.OrderId;
+            t.PColor = value.PColor;
+            t.PType=value.PType;
+            t.Notes = value.Notes;
+            t.Status = "Painting";
+            t.ImageUrl = "http://localhost:5041/images/" + value.ImageUrl.FileName;
+
+
+            if (_task.AddPaintOrders(t))
             {
                 var obj = _wc.OrderDetails.Find(value.OrderId);
                 obj.Status = "Packaging";
@@ -145,10 +205,39 @@ namespace WheelFactory.Controllers
         }
 
         [HttpPost("packaging")]
-        public IActionResult PostOrdersPackaging([FromBody] PackDTO value)
+        public IActionResult PostOrdersPackaging([FromForm] PackDTO value)
         {
-             
-            if (_task.AddPackOrders(value))
+            try
+            {
+                if (value.ImageUrl == null || value.ImageUrl.Length == 0)
+                    return BadRequest("No file uploaded.");
+
+                var originalFileName =Path.GetFileName(value.ImageUrl.FileName);
+                var filePath = Path.Combine(_basePath, originalFileName);
+
+                if (!Directory.Exists(_basePath))
+                {
+                    Directory.CreateDirectory(_basePath);
+                }
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    value.ImageUrl.CopyToAsync(stream);
+                }
+
+
+            }
+            catch { }
+
+            Task t = new Task();
+            t.OrderId = value.OrderId;
+            t.IRating = value.IRating;
+            t.Notes = value.Notes;
+            t.Status = "Packaging";
+            t.ImageUrl = "http://localhost:5041/images/" + value.ImageUrl.FileName;
+
+
+            if (_task.AddPackOrders(t))
             {
                 var obj = _wc.OrderDetails.Find(value.OrderId);
                 obj.Status = "completed";
