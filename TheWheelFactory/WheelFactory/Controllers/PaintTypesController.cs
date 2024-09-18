@@ -80,11 +80,17 @@ namespace WheelFactory.Controllers
             _context.Paint.Add(paintType);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPaintType", new { id = paintType.Id }, paintType);
+            return Ok(paintType);
         }
 
-        // DELETE: api/PaintTypes/5
-        [HttpDelete("{id}")]
+
+      
+
+
+
+
+            // DELETE: api/PaintTypes/5
+            [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePaintType(int id)
         {
             var paintType = await _context.Paint.FindAsync(id);
