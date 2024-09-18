@@ -16,14 +16,14 @@ namespace WheelFactory.Controllers
     {
         private readonly string _basePath = @"C:\Users\pulkit\Desktop\WheelFactory\Backend\backend\TheWheelFactory\WheelFactory\wwwroot\images\";
 
-        private readonly TaskService _task;
-        private readonly OrdersService _orders;
+        private readonly ITaskService _task;
+        private readonly IOrdersService _orders;
         private readonly WheelContext _wc;
-        public TaskController(WheelContext wc)
+        public TaskController(WheelContext wc,ITaskService ts,IOrdersService os)
         {
             _wc = wc;
-            _task = new TaskService(_wc);
-            _orders = new OrdersService(wc);
+            _task = ts;
+            _orders = os;
         }
 
         //GET: api/<ValuesController>

@@ -16,13 +16,14 @@ namespace WheelFactory.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly string _basePath = @"C:\Users\pulkit\Desktop\WheelFactory\Backend\backend\TheWheelFactory\WheelFactory\wwwroot\images\";
-        private readonly OrdersService _order;
+        private readonly IOrdersService _order;
         private readonly WheelContext _wheelContext;
-        public OrdersController(WheelContext wc)
+        public OrdersController(WheelContext wc, IOrdersService orderService)
         {
-            _order = new OrdersService(wc);
+            _order = orderService;
             _wheelContext = wc;
         }
+
 
         //GET api/<OrdersController>/5
         [HttpGet("{id}")]
