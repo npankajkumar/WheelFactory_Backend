@@ -77,7 +77,7 @@ namespace WheelFactory.Controllers
 
 
         [HttpPost("soldering")]
-        public IActionResult PostOrdersSoldering([FromForm] SandDTO value)
+        public async Task<IActionResult> PostOrdersSoldering([FromForm] SandDTO value)
         { 
             try
             {
@@ -94,7 +94,7 @@ namespace WheelFactory.Controllers
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    value.ImageUrl.CopyToAsync(stream);
+                   await value.ImageUrl.CopyToAsync(stream);
                 }
 
 
