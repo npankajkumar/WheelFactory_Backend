@@ -12,6 +12,7 @@ namespace MongoDBUsers
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddCors();
 
             // Add JWT Authentication
             //builder.Services.AddAuthentication(options =>
@@ -39,6 +40,12 @@ namespace MongoDBUsers
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.UseCors(option => {
+                option.AllowAnyOrigin();
+                option.AllowAnyMethod();
+                option.AllowAnyHeader();
+            });
+
 
             app.UseAuthentication();
             app.UseAuthorization();
