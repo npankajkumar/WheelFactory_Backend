@@ -6,17 +6,17 @@ using WheelFactory.Models;
 
 namespace WheelFactory.Services
 {
-    public class OrdersService
+    public class OrdersService : IOrdersService
     {
         private readonly WheelContext _context;
         public OrdersService(WheelContext context)
         {
             _context = context;
         }
-       
+
         public List<Orders> GetOrders()
         {
-            var orders =_context.OrderDetails.ToList();
+            var orders = _context.OrderDetails.ToList();
             return (orders);
 
         }
@@ -52,15 +52,15 @@ namespace WheelFactory.Services
             var order = _context.OrderDetails.Find(id);
 
             if (order != null)
-            { 
+            {
                 order.Status = status;
-                
+
                 _context.SaveChanges();
 
                 return true;
             }
 
-            return false; 
+            return false;
         }
 
         public bool ScrapOrder(int id)
@@ -84,21 +84,21 @@ namespace WheelFactory.Services
 
             if (order != null)
             {
-                order.Status ="Soldering";
+                order.Status = "Soldering";
                 _context.SaveChanges();
                 return true;
             }
             return false;
         }
-        
 
-public List<Orders> GetInventOrders()
-    {
-        return _context.OrderDetails
-                       .Where(o => o.Status == "neworder")
-                       .ToList();
+
+        public List<Orders> GetInventOrders()
+        {
+            return _context.OrderDetails
+                           .Where(o => o.Status == "neworder")
+                           .ToList();
+        }
+
+
     }
-
-
-}
 }

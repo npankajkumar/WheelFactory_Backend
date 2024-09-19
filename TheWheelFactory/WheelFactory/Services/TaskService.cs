@@ -7,15 +7,15 @@ using Task = WheelFactory.Models.Task;
 
 namespace WheelFactory.Services
 {
-    public class TaskService
+    public class TaskService : ITaskService
     {
         private readonly WheelContext _context;
-        private readonly OrdersService _orders;
+        private readonly IOrdersService _orders;
 
-        public TaskService(WheelContext context)
+        public TaskService(WheelContext context, IOrdersService service)
         {
             _context = context;
-            _orders = new OrdersService(context);
+            _orders = service;
 
         }
         [HttpGet]
@@ -35,17 +35,17 @@ namespace WheelFactory.Services
         }
         public List<Orders> GetSold()
         {
-            var orders = _context.OrderDetails.Where(o => o.Status == "Soldering" || o.Status=="Redo").ToList();
+            var orders = _context.OrderDetails.Where(o => o.Status == "Soldering" || o.Status == "Redo").ToList();
             return orders;
         }
         public List<Task> GetSoldId(int id)
         {
-            return _context.Tasks.Where(b => b.OrderId == id && b.Status=="soldering").ToList();
+            return _context.Tasks.Where(b => b.OrderId == id && b.Status == "soldering").ToList();
         }
 
         public List<Task> GetPaintId(int id)
         {
-            return _context.Tasks.Where(b => b.OrderId == id && b.Status=="painting").ToList();
+            return _context.Tasks.Where(b => b.OrderId == id && b.Status == "painting").ToList();
         }
 
         public bool AddSandOrders(Task sand)
@@ -73,17 +73,17 @@ namespace WheelFactory.Services
         }
 
         public bool AddPaintOrders(Task p)
-        { 
+        {
             _context.Tasks.Add(p);
             _context.SaveChanges();
             return true;
         }
-        
+
 
         public bool AddPackOrders(Task p)
         {
 
-            
+
             _context.Tasks.Add(p);
             _context.SaveChanges();
             return true;
@@ -99,7 +99,7 @@ namespace WheelFactory.Services
                 task.Status = t.Status;
                 task.ImageUrl = t.ImageUrl;
                 task.Notes = t.Notes;
-                task.IRating= t.IRating;
+                task.IRating = t.IRating;
                 task.PColor = t.PColor;
                 task.PType = t.PType;
                 _context.SaveChanges();

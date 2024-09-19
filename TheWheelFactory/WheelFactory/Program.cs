@@ -5,17 +5,21 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using WheelFactory.Models;
+using WheelFactory.Services;
 
 namespace WheelFactory
 {
     public class Program
     {
-        private static void Main(string[] args)
+        public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // Add services to the container.
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options => {
-                    options.TokenValidationParameters = new TokenValidationParameters()
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
                         ValidateAudience = true,
@@ -27,31 +31,35 @@ namespace WheelFactory
                     };
                 });
 
-            // Add services to the container
             builder.Services.AddSwaggerGen();
             builder.Services.AddCors();
             builder.Services.AddControllers();
+
+            // Register your services and DbContext
+            builder.Services.AddScoped<IOrdersService,OrdersService>();
+            builder.Services.AddScoped<ITaskService, TaskService>();
+
             builder.Services.AddDbContext<WheelContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("wheel")));
 
             var app = builder.Build();
-            app.UseCors(option => {
-                option.AllowAnyOrigin();
-                option.AllowAnyMethod();
-                option.AllowAnyHeader();
-            });
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-
             }
+
             app.UseStaticFiles();
+            app.UseCors(options =>
+            {
+                options.AllowAnyOrigin();
+                options.AllowAnyMethod();
+                options.AllowAnyHeader();
+            });
 
             app.UseAuthentication();
-
             app.UseAuthorization();
 
             app.MapControllers();
