@@ -24,7 +24,7 @@ namespace WheelFactory.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Orders>()
-                .ToTable(tb => tb.HasTrigger("trigger_log"));
+                .ToTable(tb => tb.HasTrigger("triggers_log"));
         }
 
     }

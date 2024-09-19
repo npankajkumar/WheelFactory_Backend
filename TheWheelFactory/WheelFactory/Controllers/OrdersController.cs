@@ -1,12 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WheelFactory.Models;
 using WheelFactory.Services;
-using static NuGet.Packaging.PackagingConstants;
-using Task = WheelFactory.Models.Task;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WheelFactory.Controllers
 {
@@ -18,51 +13,88 @@ namespace WheelFactory.Controllers
         private readonly string _basePath = @"C:\Users\pulkit\Desktop\WheelFactory\Backend\backend\TheWheelFactory\WheelFactory\wwwroot\images\";
         private readonly IOrdersService _order;
         private readonly WheelContext _wheelContext;
+
         public OrdersController(WheelContext wc, IOrdersService orderService)
         {
             _order = orderService;
             _wheelContext = wc;
         }
 
-
-        //GET api/<OrdersController>/5
         [HttpGet("{id}")]
-        public Orders Get(int id)
+        public IActionResult Get(int id)
         {
-            return _order.GetById(id);
+            try
+            {
+                var order = _order.GetById(id);
+               
+                return Ok(order);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpGet()]
-        public List<Orders> GetAllOrders()
+        public IActionResult GetAllOrders()
         {
-
-            return _order.GetOrders();
-
+            try
+            {
+                var orders = _order.GetOrders();
+        
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpGet("current")]
-        public List<Orders> GetCurrentOrders()
+        public IActionResult GetCurrentOrders()
         {
-            return _order.GetCurrent();
+            try
+            {
+                var orders = _order.GetCurrent();
+               
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
-
         [HttpGet("completed")]
-        public List<Orders> GetCompletedOrders()
+        public IActionResult GetCompletedOrders()
         {
-            return _order.GetComplete();
+            try
+            {
+                var orders = _order.GetComplete();
+               
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpGet("scraped")]
-        public List<Orders> GetScrapedOrders()
+        public IActionResult GetScrapedOrders()
         {
-            return _order.GetScraped();
+            try
+            {
+                var orders = _order.GetScraped();
+               
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
-
-
-
-        // POST api/<OrdersController>
         [HttpPost]
         public async Task<IActionResult> Post([FromForm] OrderDTO value)
         {
@@ -74,20 +106,17 @@ namespace WheelFactory.Controllers
                 var originalFileName = Path.GetFileName(value.ImageUrl.FileName);
                 var filePath = Path.Combine(_basePath, originalFileName);
 
-                // Ensure the directory exists
                 if (!Directory.Exists(_basePath))
                 {
                     Directory.CreateDirectory(_basePath);
                 }
 
-                // Use 'async' file stream to handle file upload properly
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    await value.ImageUrl.CopyToAsync(stream);  // Ensure this is awaited
+                    await value.ImageUrl.CopyToAsync(stream);
                 }
 
-                // Create the order object and save the image URL
-                Orders o = new Orders
+                var order = new Orders
                 {
                     ClientName = value.ClientName,
                     Year = value.Year,
@@ -99,63 +128,91 @@ namespace WheelFactory.Controllers
                     ImageUrl = "http://localhost:5041/images/" + originalFileName
                 };
 
-                // Save order to the database
-                if (_order.AddOrders(o))
+                if (_order.AddOrders(order))
                 {
-                    return Ok(o);
+                    return Ok(order);
                 }
 
                 return BadRequest("Failed to add the order.");
             }
             catch (Exception ex)
             {
-                // Log the exception for debugging purposes
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 
-        // PUT api/<OrdersController>/5
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromForm] OrderDTO value)
         {
-            if (_order.UpdateOrder(id, value.Status))
+            try
             {
-                return Ok(value);
-            }
-            return BadRequest();
+                if (value == null || string.IsNullOrEmpty(value.Status))
+                {
+                    return BadRequest("Invalid order data provided.");
+                }
 
+                var isUpdated = _order.UpdateOrder(id, value.Status);
+                if (isUpdated)
+                {
+                    return Ok($"Order with ID {id} updated successfully.");
+                }
+
+                return BadRequest($"Order with ID {id} not found or update failed.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpPut("scrap/{id}")]
         public IActionResult PutScrapOrder(int id)
         {
-            if (_order.ScrapOrder(id))
+            try
             {
-                return Ok("Scraped order "+id);
+                if (_order.ScrapOrder(id))
+                {
+                    return Ok($"Scraped order {id}");
+                }
+                return BadRequest("Failed to scrap the order.");
             }
-            return BadRequest();
-
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
-
 
         [HttpGet("Inventory")]
         public IActionResult GetOrdersInventory()
         {
-            var orders = _order.GetInventOrders();
-            if (orders != null)
+            try
             {
+                var orders = _order.GetInventOrders();
+               
                 return Ok(orders);
             }
-            return BadRequest();
-        }
-        [HttpPut("Inventory/{id}")]
-        public IActionResult PutOrdersInventory( int id)
-        {
-            if (_order.UpdateInventOrder(id))
+            catch (Exception ex)
             {
-                return Ok("status changed to Soldering");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
-            return BadRequest();
+        }
+
+        [HttpPut("Inventory/{id}")]
+        public IActionResult PutOrdersInventory(int id)
+        {
+            try
+            {
+                if (_order.UpdateInventOrder(id))
+                {
+                    return Ok("Status changed to Soldering");
+                }
+                return BadRequest("Failed to update inventory order.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }
+

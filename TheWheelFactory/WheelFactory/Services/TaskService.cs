@@ -16,85 +16,186 @@ namespace WheelFactory.Services
         {
             _context = context;
             _orders = service;
-
         }
+
         [HttpGet]
         public List<Task> GetTask()
         {
-            return _context.Tasks.ToList();
+            try
+            {
+                return _context.Tasks.ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching tasks", ex);
+            }
         }
+
         public List<Task> GetTaskById(int id)
         {
-            var task = _context.Tasks.Where(t => t.OrderId == id).ToList();
-            return task;
-
+            try
+            {
+                var tasks = _context.Tasks.Where(t => t.OrderId == id).ToList();
+                if (tasks == null || !tasks.Any())
+                {
+                    throw new KeyNotFoundException($"No tasks found for Order ID {id}");
+                }
+                return tasks;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching tasks by Order ID", ex);
+            }
         }
+
         public List<Task> GetPackId(int id)
         {
-            return _context.Tasks.Where(b => b.OrderId == id && b.Status == "packaging").ToList();
+            try
+            {
+                return _context.Tasks.Where(b => b.OrderId == id && b.Status == "packaging").ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching packaging tasks by Order ID", ex);
+            }
         }
+
         public List<Orders> GetSold()
         {
-            var orders = _context.OrderDetails.Where(o => o.Status == "Soldering" || o.Status == "Redo").ToList();
-            return orders;
+            try
+            {
+                return _context.OrderDetails.Where(o => o.Status == "Soldering" || o.Status == "Redo").ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching soldering or redo orders", ex);
+            }
         }
+
         public List<Task> GetSoldId(int id)
         {
-            return _context.Tasks.Where(b => b.OrderId == id && b.Status == "soldering").ToList();
+            try
+            {
+                return _context.Tasks.Where(b => b.OrderId == id && b.Status == "soldering").ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching soldering tasks by Order ID", ex);
+            }
         }
 
         public List<Task> GetPaintId(int id)
         {
-            return _context.Tasks.Where(b => b.OrderId == id && b.Status == "painting").ToList();
+            try
+            {
+                return _context.Tasks.Where(b => b.OrderId == id && b.Status == "painting").ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching painting tasks by Order ID", ex);
+            }
         }
 
         public bool AddSandOrders(Task sand)
         {
-            _context.Tasks.Add(sand);
-            _context.SaveChanges();
-            return true;
+            try
+            {
+                _context.Tasks.Add(sand);
+                _context.SaveChanges();
+                return true;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                throw new Exception("Error adding sand orders to the database", dbEx);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error adding sand orders", ex);
+            }
         }
 
         public List<Orders> GetPaint()
         {
-            var orders = _context.OrderDetails.Where(o => o.Status == "Painting").ToList();
-            return orders;
+            try
+            {
+                return _context.OrderDetails.Where(o => o.Status == "Painting").ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching painting orders", ex);
+            }
         }
+
         public List<Task> GetAllPaint()
         {
-            var tas = _context.Tasks.Where(o => o.Status == "Soldering").ToList();
-            return tas;
+            try
+            {
+                return _context.Tasks.Where(o => o.Status == "Soldering").ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching all soldering tasks", ex);
+            }
         }
 
         public List<Orders> GetPack()
         {
-            var orders = _context.OrderDetails.Where(o => o.Status == "Packaging").ToList();
-            return orders;
+            try
+            {
+                return _context.OrderDetails.Where(o => o.Status == "Packaging").ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching packaging orders", ex);
+            }
         }
 
         public bool AddPaintOrders(Task p)
         {
-            _context.Tasks.Add(p);
-            _context.SaveChanges();
-            return true;
+            try
+            {
+                _context.Tasks.Add(p);
+                _context.SaveChanges();
+                return true;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                throw new Exception("Error adding paint orders to the database", dbEx);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error adding paint orders", ex);
+            }
         }
-
 
         public bool AddPackOrders(Task p)
         {
-
-
-            _context.Tasks.Add(p);
-            _context.SaveChanges();
-            return true;
+            try
+            {
+                _context.Tasks.Add(p);
+                _context.SaveChanges();
+                return true;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                throw new Exception("Error adding pack orders to the database", dbEx);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error adding pack orders", ex);
+            }
         }
 
         public bool UpdateTask(int id, Task t)
         {
-            var task = _context.Tasks.Find(id);
-
-            if (task != null)
+            try
             {
+                var task = _context.Tasks.Find(id);
+                if (task == null)
+                {
+                    throw new KeyNotFoundException($"Task with ID {id} not found");
+                }
+
                 task.SandBlastingLevel = t.SandBlastingLevel;
                 task.Status = t.Status;
                 task.ImageUrl = t.ImageUrl;
@@ -102,23 +203,43 @@ namespace WheelFactory.Services
                 task.IRating = t.IRating;
                 task.PColor = t.PColor;
                 task.PType = t.PType;
+
                 _context.SaveChanges();
                 return true;
             }
-
-            return false;
+            catch (DbUpdateException dbEx)
+            {
+                throw new Exception("Error updating task in the database", dbEx);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error updating task", ex);
+            }
         }
 
         public bool DeleteTask(int id)
         {
-            var task = _context.Tasks.Find(id);
-            if (task != null)
+            try
             {
+                var task = _context.Tasks.Find(id);
+                if (task == null)
+                {
+                    throw new KeyNotFoundException($"Task with ID {id} not found");
+                }
+
                 _context.Tasks.Remove(task);
                 _context.SaveChanges();
                 return true;
             }
-            return false;
+            catch (DbUpdateException dbEx)
+            {
+                throw new Exception("Error deleting task from the database", dbEx);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error deleting task", ex);
+            }
         }
     }
 }
+

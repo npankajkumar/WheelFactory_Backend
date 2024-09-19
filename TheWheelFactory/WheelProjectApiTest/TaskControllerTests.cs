@@ -42,7 +42,9 @@ namespace WheelFactory.Tests
             var result = _controller.GetPackagingById(1);
 
             // Assert
-            Assert.That(result, Is.EqualTo(tasks));
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult.Value, Is.EqualTo(tasks));
         }
 
         // Test for Get All Tasks
@@ -57,7 +59,9 @@ namespace WheelFactory.Tests
             var result = _controller.Get();
 
             // Assert
-            Assert.That(result, Is.EqualTo(tasks));
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult.Value, Is.EqualTo(tasks));
         }
 
         // Test for Get Task By Id
@@ -72,7 +76,9 @@ namespace WheelFactory.Tests
             var result = _controller.Get(1);
 
             // Assert
-            Assert.That(result, Is.EqualTo(tasks));
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult.Value, Is.EqualTo(tasks));
         }
 
         // Test for Get Orders Soldering
@@ -104,7 +110,9 @@ namespace WheelFactory.Tests
             var result = _controller.GetSolderingById(1);
 
             // Assert
-            Assert.That(result, Is.EqualTo(tasks));
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult.Value, Is.EqualTo(tasks));
         }
 
         // Test for Get Painting By Id
@@ -119,7 +127,9 @@ namespace WheelFactory.Tests
             var result = _controller.GetPaintingById(1);
 
             // Assert
-            Assert.That(result, Is.EqualTo(tasks));
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult.Value, Is.EqualTo(tasks));
         }
 
         // Test for Post Orders Soldering

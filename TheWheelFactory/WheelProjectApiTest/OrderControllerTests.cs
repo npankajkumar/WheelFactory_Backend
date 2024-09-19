@@ -37,7 +37,9 @@ namespace WheelFactory.Tests
             var result = _controller.Get(1);
 
             // Assert
-            Assert.That(result, Is.EqualTo(order));
+            //Assert.That(result, Is.EqualTo(order));
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            Assert.That(((OkObjectResult)result).Value, Is.EqualTo(order));
         }
 
         // Test for GetAllOrders
@@ -56,7 +58,10 @@ namespace WheelFactory.Tests
             var result = _controller.GetAllOrders();
 
             // Assert
-            Assert.That(result, Is.EqualTo(orders));
+            //Assert.That(result, Is.EqualTo(orders));
+
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            Assert.That(((OkObjectResult)result).Value, Is.EqualTo(orders));
         }
 
         // Test for GetCurrentOrders
@@ -71,7 +76,10 @@ namespace WheelFactory.Tests
             var result = _controller.GetCurrentOrders();
 
             // Assert
-            Assert.That(result, Is.EqualTo(currentOrders));
+            //Assert.That(result, Is.EqualTo(currentOrders));
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = result as OkObjectResult;
+            Assert.That(((OkObjectResult)result).Value, Is.EqualTo(currentOrders));
         }
 
         // Test for GetCompletedOrders
@@ -86,7 +94,9 @@ namespace WheelFactory.Tests
             var result = _controller.GetCompletedOrders();
 
             // Assert
-            Assert.That(result, Is.EqualTo(completedOrders));
+            //Assert.That(result, Is.EqualTo(completedOrders));
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            Assert.That(((OkObjectResult)result).Value, Is.EqualTo(completedOrders));
         }
 
         // Test for Post Order
@@ -147,8 +157,16 @@ namespace WheelFactory.Tests
             var result = _controller.Put(1, orderDto);
 
             // Assert
-            Assert.That(result, Is.InstanceOf<BadRequestResult>());
-        }
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
+        
+    }
+
+
+
+
+
+
+
 
         // Test for Scrap Order
         [Test]
@@ -174,7 +192,7 @@ namespace WheelFactory.Tests
             var result = _controller.PutScrapOrder(1);
 
             // Assert
-            Assert.That(result, Is.InstanceOf<BadRequestResult>());
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
         }
 
         // Test for Inventory Orders
@@ -215,7 +233,7 @@ namespace WheelFactory.Tests
             var result = _controller.PutOrdersInventory(1);
 
             // Assert
-            Assert.That(result, Is.InstanceOf<BadRequestResult>());
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
         }
     }
 }
