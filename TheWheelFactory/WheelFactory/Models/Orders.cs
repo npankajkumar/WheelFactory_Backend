@@ -10,8 +10,8 @@ namespace WheelFactory.Models
             public int OrderId { get; set; }
             public string ClientName { get; set; }
             public int Year { get; set; }
-            public int Make { get; set; }
-            public int Model { get; set; }
+            public string Make { get; set; }
+            public string Model { get; set; }
             public string DamageType { get; set; }
             public string ImageUrl { get; set; }
             public string Notes { get; set; }

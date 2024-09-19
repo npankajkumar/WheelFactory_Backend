@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using WheelFactory.Models;
 using WheelFactory.Services;
 
@@ -34,6 +35,11 @@ namespace WheelFactory
             builder.Services.AddSwaggerGen();
             builder.Services.AddCors();
             builder.Services.AddControllers();
+            var logger = new LoggerConfiguration()
+            .WriteTo
+            .File("C:\\Users\\pulkit\\Desktop\\WheelFactory\\Backend\\backend\\TheWheelFactory\\WheelFactory\\Logs\\WheelFactoryLogs.txt", rollingInterval: RollingInterval.Day)
+            .CreateLogger();
+            builder.Services.AddSerilog(logger);
 
             // Register your services and DbContext
             builder.Services.AddScoped<IOrdersService,OrdersService>();

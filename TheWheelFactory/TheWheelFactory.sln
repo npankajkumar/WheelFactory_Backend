@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WheelFactory", "WheelFactor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MongoDBUsers", "MongoDBUsers\MongoDBUsers.csproj", "{B073ACC5-C1C9-4C2D-921C-5BD93BDA8771}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WheelProjectApiTest", "WheelProjectApiTest\WheelProjectApiTest.csproj", "{D5FC74A5-820F-4455-9652-9AC40E61F675}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WheelProjectApiTest", "WheelProjectApiTest\WheelProjectApiTest.csproj", "{D5FC74A5-820F-4455-9652-9AC40E61F675}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

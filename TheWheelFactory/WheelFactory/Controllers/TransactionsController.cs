@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using NuGet.Versioning;
 using WheelFactory.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 
 
 namespace WheelFactory.Controllers
@@ -18,10 +20,12 @@ namespace WheelFactory.Controllers
     public class TransactionsController : ControllerBase
     {
         private readonly WheelContext _context;
+        private ILogger _logger;
 
-        public TransactionsController(WheelContext wc)
+        public TransactionsController(WheelContext wc,ILogger<TransactionsController> log)
         {
             _context = wc;
+            _logger = log;
         }
 
 
@@ -29,6 +33,7 @@ namespace WheelFactory.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTransaction(int id)
         {
+            _logger.LogInformation("this method is called get transactions");
             var transaction = await _context.Transactions.Where(a => a.OrderId == id).ToListAsync();
 
             return Ok(transaction);
